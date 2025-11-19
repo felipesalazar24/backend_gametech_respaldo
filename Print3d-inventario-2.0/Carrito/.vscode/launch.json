@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CarritoApplication<Carrito>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "Print3D.Carrito.CarritoApplication",
+            "projectName": "Carrito",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

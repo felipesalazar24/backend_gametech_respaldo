@@ -1,0 +1,36 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-TestApplication<test>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "Print3D.test.TestApplication",
+      "projectName": "test",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55979 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=test"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-InventarioApplication<Inventario>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "Print3D.Inventario.InventarioApplication",
+      "projectName": "Inventario",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55982 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=Inventario"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-CarritoApplication<Carrito>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "Print3D.Carrito.CarritoApplication",
+      "projectName": "Carrito",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

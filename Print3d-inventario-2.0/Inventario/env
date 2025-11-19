@@ -1,0 +1,5 @@
+DB_NEON_NAME=Print3D
+DB_NEON_ADMIN=Print3D_owner
+DB_NEON_PASS=npg_a0jkmDxG1Chu
+DB_NEON_HOST=ep-cold-hall-a4pk11ji-pooler.us-east-1.aws.neon.tech
+DB_NEON_PORT=5432
