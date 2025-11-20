@@ -25,43 +25,28 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "rut", length = 255, unique = true, nullable = false)
-    private String rut;
-
     @Column(name = "nombre", length = 255, unique = false, nullable = false)
     private String nombre;
-
-    @Column(name = "apellido", length = 255, unique = false, nullable = false)
-    private String apellido;
 
     @Column(name = "email", length = 255, unique = true, nullable = false)
     private String email;
 
-    @Column(name = "telefono", length =  255, unique =  true, nullable = false)
-    private int telefono;
-
-    @Column(name = "direccion", length = 255, unique = false, nullable = false)
-    private String direccion;
-
-    @Column(name = "usuario", length = 255, unique = true, nullable = false)
-    private String usuario;
-
     @Column(name = "contrasenia", length = 255, unique = false, nullable = false)
     private String contrasenia;
+
+    @Column(name = "telefono", length =  255, unique =  true, nullable = true)
+    private int telefono;
+
+    @Column(name = "region", length = 255, unique = false, nullable = false)
+    private String region;
+
+    @Column(name = "comuna", length = 255, unique = false, nullable = false)
+    private String comuna;
 
     @Column(name = "fechaCreacion", nullable = false)
     private LocalDate fechaCreacion;
 
-    @Column(name = "rol", length = 255, unique = false, nullable = false)
+    @Column(name = "rol", length = 255, unique = false, nullable = false, columnDefinition = "varchar(255) default 'cliente'")
     private String rol;
-
-    @Column(name ="resenias", length = 255, unique = false, nullable = true)
-    private String resenias;
-
-    @Column (name = "productos_vendidos", length = 255, unique = false, nullable = true)
-    private int productosVendidos;
-
-    @Column (name = "productos_comprados", length = 255, unique = false, nullable = true)
-    private int productosComprados;
 
 }

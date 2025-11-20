@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TestApplication<test>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "Print3D.test.TestApplication",
+            "projectName": "test",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-InventarioApplication<Inventario>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "Print3D.Inventario.InventarioApplication",
+            "projectName": "Inventario",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CarritoApplication<Carrito>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "Print3D.Carrito.CarritoApplication",
+            "projectName": "Carrito",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

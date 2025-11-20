@@ -31,19 +31,14 @@ public class UsuarioService {
         if (optionalUsuario.isPresent()) {
             Usuario usuarioExistente = optionalUsuario.get();
 
-            usuarioExistente.setRut(datosNuevos.getRut());
             usuarioExistente.setNombre(datosNuevos.getNombre());
-            usuarioExistente.setApellido(datosNuevos.getApellido());
             usuarioExistente.setEmail(datosNuevos.getEmail());
             usuarioExistente.setTelefono(datosNuevos.getTelefono());
-            usuarioExistente.setDireccion(datosNuevos.getDireccion());
-            usuarioExistente.setUsuario(datosNuevos.getUsuario());
             usuarioExistente.setContrasenia(datosNuevos.getContrasenia());
+            usuarioExistente.setRegion(datosNuevos.getRegion());
+            usuarioExistente.setComuna(datosNuevos.getComuna());
             usuarioExistente.setFechaCreacion(datosNuevos.getFechaCreacion());
             usuarioExistente.setRol(datosNuevos.getRol());
-            usuarioExistente.setResenias(datosNuevos.getResenias());
-            usuarioExistente.setProductosVendidos(datosNuevos.getProductosVendidos());
-            usuarioExistente.setProductosComprados(datosNuevos.getProductosComprados());
 
             return usuarioRepository.save(usuarioExistente);
         } else {
@@ -62,9 +57,4 @@ public class UsuarioService {
     public Optional<Usuario> findUsuarioById(int id) {
         return usuarioRepository.findById(id);
     }
-
-    public Optional <Usuario> findByRut (String rut){
-        return usuarioRepository.findByRut(rut);
-    }
-
 }

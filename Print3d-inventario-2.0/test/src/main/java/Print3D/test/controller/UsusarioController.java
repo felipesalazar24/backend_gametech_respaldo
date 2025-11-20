@@ -41,30 +41,16 @@ public class UsusarioController {
     @PostMapping("")
     public ResponseEntity<Usuario> CreateUser(@RequestBody Usuario usuario){
         
-        if(usuario.getRut() == null || usuario.getRut().isEmpty() ||
-            usuario.getNombre() == null || usuario.getNombre().isEmpty() ||
-            usuario.getApellido() == null || usuario.getApellido().isEmpty() ||
+        if( usuario.getNombre() == null || usuario.getNombre().isEmpty() ||
             usuario.getEmail() == null || usuario.getEmail().isEmpty() ||
-            usuario.getUsuario() == null || usuario.getUsuario().isEmpty() ||
             usuario.getContrasenia() == null || usuario.getContrasenia().isEmpty() ||
-            usuario.getDireccion() == null || usuario.getDireccion().isEmpty() ||
+            usuario.getRegion() == null || usuario.getRegion().isEmpty() ||
+            usuario.getComuna() == null || usuario.getComuna().isEmpty() ||
             usuario.getRol() == null || usuario.getRol().isEmpty()){
                 return ResponseEntity.badRequest().build();
             }
         if (usuario.getTelefono() <=0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (usuario.getResenias() == null) {
-            usuario.setResenias("");
-        }
-
-        if(usuario.getProductosVendidos() == 0){
-            usuario.setProductosVendidos(0);
-        }
-
-        if (usuario.getProductosComprados() == 0) {
-            usuario.setProductosComprados(0);
+            usuario.setTelefono(0);
         }
 
         if (usuario.getFechaCreacion() == null) {
@@ -79,14 +65,6 @@ public class UsusarioController {
     @GetMapping("/id/{id}")
     public ResponseEntity<Usuario> getById(@PathVariable("id") int id) {
         return usuarioService.findUsuarioById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
-    }
-    
-    
-    @GetMapping("/rut/{rut}")
-    public ResponseEntity<Usuario> getByRut(@PathVariable("rut") String rut) {
-        return usuarioService.findByRut(rut)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
