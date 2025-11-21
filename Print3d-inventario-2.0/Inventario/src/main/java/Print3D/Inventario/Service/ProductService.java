@@ -4,15 +4,16 @@ import Print3D.Inventario.DTOs.ProductRequest;
 import Print3D.Inventario.DTOs.ProductResponse;
 import Print3D.Inventario.model.Producto;
 import Print3D.Inventario.Repository.ProductoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
+    @Autowired
     private final ProductoRepository productoRepository;
 
     public ProductService(ProductoRepository productoRepository) {
@@ -21,25 +22,10 @@ public class ProductService {
 
     // Crear un nuevo producto
     @Transactional
-    public ProductResponse crearProducto(ProductRequest request, UUID creadorId) {
-        Producto producto = new Producto();
-        producto.setNombre(request.getNombre());
-        producto.setDescripcion(request.getDescripcion());
-        producto.setPrecio(request.getPrecio());
-        producto.setStock(request.getStock());
-        producto.setCategoria(request.getCategoria());
-        producto.setCreadorId(creadorId);
-
-        Producto productoGuardado = productoRepository.save(producto);
-        return mapToResponse(productoGuardado);
+    public Producto crearProducto(Producto producto){
+        return productoRepository.save(producto);
     }
 
-    // Obtener producto por ID
-    public ProductResponse obtenerProductoPorId(UUID id) {
-        Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-        return mapToResponse(producto);
-    }
 
     // Listar todos los productos
     public List<ProductResponse> obtenerTodosLosProductos() {
@@ -59,14 +45,9 @@ public class ProductService {
 
     // Actualizar un producto existente
     @Transactional
-    public ProductResponse actualizarProducto(UUID id, ProductRequest request, UUID creadorId) {
+    public ProductResponse actualizarProducto(int id, ProductRequest request) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        // Verificar que el creador sea el dueño del producto
-        if (!producto.getCreadorId().equals(creadorId)) {
-            throw new RuntimeException("No autorizado para modificar este producto");
-        }
 
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());
@@ -80,13 +61,9 @@ public class ProductService {
 
     // Ajustar stock (aumentar o disminuir)
     @Transactional
-    public ProductResponse actualizarStock(UUID id, int cantidad, UUID creadorId) {
+    public ProductResponse actualizarStock(int id, int cantidad) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        if (!producto.getCreadorId().equals(creadorId)) {
-            throw new RuntimeException("No autorizado para modificar este producto");
-        }
 
         int nuevoStock = producto.getStock() + cantidad;
         if (nuevoStock < 0) {
@@ -100,13 +77,9 @@ public class ProductService {
 
     // Eliminar un producto
     @Transactional
-    public void eliminarProducto(UUID id, UUID creadorId) {
+    public void eliminarProducto(int id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        if (!producto.getCreadorId().equals(creadorId)) {
-            throw new RuntimeException("No autorizado para eliminar este producto");
-        }
 
         productoRepository.delete(producto);
     }
@@ -121,5 +94,12 @@ public class ProductService {
                 .stock(producto.getStock())
                 .categoria(producto.getCategoria())
                 .build();
+    }
+
+    // Buscar producto por ID
+    public ProductResponse findById(int id) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        return mapToResponse(producto);
     }
 }
