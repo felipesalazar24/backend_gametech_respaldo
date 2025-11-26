@@ -10,12 +10,16 @@ import java.util.List;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
-        List<Producto> findByCategoria(String categoria);
+    @Query(value = "SELECT * FROM productos WHERE categoria = :categoria", nativeQuery = true)
+    List<Producto> findByCategoria(@Param("categoria") String categoria);
+
 
     @Query("SELECT p FROM Producto p WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
     List<Producto> buscarPorNombre(@Param("nombre") String nombre);
 
     @Query("SELECT p.stock FROM Producto p WHERE p.id = :productoId")
     Integer verificarStock(@Param("productoId") int productoId);
-
+    
+    @Query("SELECT DISTINCT p.categoria FROM Producto p")
+    List<String> findDistinctCategorias();
 }

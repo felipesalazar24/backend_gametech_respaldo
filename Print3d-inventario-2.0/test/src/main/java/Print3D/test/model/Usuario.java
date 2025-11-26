@@ -32,7 +32,7 @@ public class Usuario {
     @Column(name = "contrasenia", length = 255, unique = false, nullable = false)
     private String contrasenia;
 
-    @Column(name = "telefono", length =  255, unique =  true, nullable = true)
+    @Column(name = "telefono", length =  255, unique =  false, nullable = true)
     private int telefono;
 
     @Column(name = "region", length = 255, unique = false, nullable = false)

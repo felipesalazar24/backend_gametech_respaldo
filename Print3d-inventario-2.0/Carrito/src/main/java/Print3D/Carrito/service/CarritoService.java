@@ -1,59 +1,93 @@
 package Print3D.Carrito.service;
 
-import Print3D.Carrito.dto.ProductoDTO;
-import Print3D.Carrito.dto.UsuarioDTO;
-import Print3D.Carrito.model.Carrito;
+import Print3D.Carrito.DTO.ProductoDTO;
+import Print3D.Carrito.model.CarritoItem;
+import Print3D.Carrito.repository.CarritoItemRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class CarritoService {
-    private final Map<String, Carrito> carritos = new HashMap<>();
+
+    private final CarritoItemRepository carritoItemRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String usuarioServiceUrl = "http://localhost:8082/usuarios/";
-    private final String inventarioServiceUrl = "http://localhost:8081/productos/";
-
-    public Carrito obtenerCarrito(String userId) {
-        return carritos.computeIfAbsent(userId, Carrito::new);
+    public CarritoService(CarritoItemRepository carritoItemRepository) {
+        this.carritoItemRepository = carritoItemRepository;
     }
 
-    public boolean agregarProducto(String userId, String productId, int cantidad) {
-        // Verificar usuario
-        UsuarioDTO usuario = restTemplate.getForObject(usuarioServiceUrl + userId, UsuarioDTO.class);
-        if (usuario == null) return false;
-
-        // Verificar producto
-        ProductoDTO producto = restTemplate.getForObject(inventarioServiceUrl + productId, ProductoDTO.class);
-        if (producto == null || producto.getStock() < cantidad) return false;
-
-        obtenerCarrito(userId).agregarProducto(productId, cantidad);
-        return true;
+    private ProductoDTO obtenerProductoDesdeMicroservicio(int productId) {
+        try {
+            return restTemplate.getForObject(
+                    "http://localhost:8081/productos/id/" + productId, 
+                    ProductoDTO.class
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Producto no encontrado en microservicio Productos"
+            );
+        }
     }
 
-    public boolean eliminarProducto(String userId, String productId) {
-        Carrito carrito = obtenerCarrito(userId);
-        carrito.eliminarProducto(productId);
-        return true;
+    public List<CarritoItem> obtenerCarrito(int userId) {
+        return carritoItemRepository.findByUserId(userId);
     }
 
-    public void vaciarCarrito(String userId) {
-        obtenerCarrito(userId).vaciar();
-    }
+    @Transactional
+    public CarritoItem agregarProducto(int userId, int productId, int cantidad) {
 
-    public double calcularTotal(String userId) {
-        Carrito carrito = obtenerCarrito(userId);
-        double total = 0;
-
-        for (Map.Entry<String, Integer> entry : carrito.getProductos().entrySet()) {
-            ProductoDTO producto = restTemplate.getForObject(inventarioServiceUrl + entry.getKey(), ProductoDTO.class);
-            if (producto != null) {
-                total += producto.getPrecio() * entry.getValue();
-            }
+        if (cantidad <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cantidad inválida");
         }
 
-        return total;
+        ProductoDTO producto = obtenerProductoDesdeMicroservicio(productId);
+
+        CarritoItem existente =
+                carritoItemRepository.findByUserIdAndProductId(userId, productId);
+
+        if (existente != null) {
+            existente.setCantidad(existente.getCantidad() + cantidad);
+            return carritoItemRepository.save(existente);
+        }
+
+        CarritoItem nuevo = new CarritoItem(
+                userId,
+                productId,
+                cantidad,
+                producto.getPrecio()
+        );
+
+        return carritoItemRepository.save(nuevo);
+    }
+
+    @Transactional
+    public void eliminarProducto(int userId, int productId) {
+
+        CarritoItem item =
+                carritoItemRepository.findByUserIdAndProductId(userId, productId);
+
+        if (item == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no existe en carrito");
+        }
+
+        carritoItemRepository.delete(item);
+    }
+
+    @Transactional
+    public void vaciarCarrito(int userId) {
+        List<CarritoItem> items = carritoItemRepository.findByUserId(userId);
+        carritoItemRepository.deleteAll(items);
+    }
+
+    public double calcularTotal(int userId) {
+        return carritoItemRepository.findByUserId(userId)
+                .stream()
+                .mapToDouble(i -> i.getPrecioUnitario() * i.getCantidad())
+                .sum();
     }
 }
