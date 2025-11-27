@@ -20,6 +20,4 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     @Query("SELECT p.stock FROM Producto p WHERE p.id = :productoId")
     Integer verificarStock(@Param("productoId") int productoId);
     
-    @Query("SELECT DISTINCT p.categoria FROM Producto p")
-    List<String> findDistinctCategorias();
 }
